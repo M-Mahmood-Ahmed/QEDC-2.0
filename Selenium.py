@@ -1,4 +1,5 @@
 from datetime import datetime
+from pathlib import Path
 from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 from selenium.webdriver.support.ui import WebDriverWait
@@ -11,6 +12,10 @@ import json
 import os
 import re
 import logging
+
+BASE_DIR = Path(__file__).resolve().parent
+OUTPUT_DIR = BASE_DIR / "output"
+OUTPUT_DIR.mkdir(exist_ok=True)
 
 
 def init_driver():
@@ -27,7 +32,7 @@ def init_driver():
         ]
 
         # driver = uc.Chrome(options=chrome_options)
-        driver = uc.Chrome(options=chrome_options, version_main=131)
+        driver = uc.Chrome(options=chrome_options)
         # driver = uc.Chrome(options=chrome_options, driver_executable_path=r"D:\Work\chromedriver\chromedriver.exe")
         user_agent = random.choice(useragentarray)
         driver.execute_cdp_cmd(
@@ -682,16 +687,17 @@ def scrape_what_they_do_without_quantum(driver, base_url):
 
 
 def save_to_json(data, filename):
-    """Save data to a JSON file."""
-    logging.info(f"Saving data to {filename}")
-    if os.path.isfile(filename):
-        with open(filename, "r") as file:
+    """Save data to a JSON file inside the output directory."""
+    target_path = OUTPUT_DIR / filename
+    logging.info(f"Saving data to {target_path}")
+    if target_path.is_file():
+        with target_path.open("r", encoding="utf-8") as file:
             existing_data = json.load(file)
         existing_data.append(data)
     else:
         existing_data = [data]
 
-    with open(filename, "w") as file:
+    with target_path.open("w", encoding="utf-8") as file:
         json.dump(existing_data, file, indent=4)
 
 
@@ -774,9 +780,9 @@ def main(input_csv, username, password):
                     }
                     save_to_json(data, "about_data.json")
                     save_to_json(data, "where_they_live_with_quantum_data.json")
-                    # save_to_json(data, 'what_they_do_without_quantum_data.json')
                     save_to_json(data, "where_they_live_without_quantum_data.json")
-                    # save_to_json(data, 'what_they_do_with_quantum_data.json')
+                    save_to_json(data, "what_they_do_with_quantum_data.json")
+                    save_to_json(data, "what_they_do_without_quantum_data.json")
                     continue
 
                 # Validate and clean the LinkedIn URL
@@ -792,9 +798,9 @@ def main(input_csv, username, password):
                     }
                     save_to_json(data, "about_data.json")
                     save_to_json(data, "where_they_live_with_quantum_data.json")
-                    # save_to_json(data, 'what_they_do_without_quantum_data.json')
                     save_to_json(data, "where_they_live_without_quantum_data.json")
-                    # save_to_json(data, 'what_they_do_with_quantum_data.json')
+                    save_to_json(data, "what_they_do_with_quantum_data.json")
+                    save_to_json(data, "what_they_do_without_quantum_data.json")
                     continue
 
                 # Scrape 'About' section
@@ -894,7 +900,7 @@ def setup_logging():
 if __name__ == "__main__":
     setup_logging()
     input_csv_file = "QED-C_Linkedin_URLS_Jan_2024.csv"
-    linkedin_username = "faxene5609@maonyn.com"
-    linkedin_password = "ummie@1234"
+    linkedin_username = "sotakog448@bablace.com"
+    linkedin_password = "Callit00F"
 
     main(input_csv_file, linkedin_username, linkedin_password)

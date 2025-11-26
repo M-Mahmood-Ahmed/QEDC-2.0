@@ -1,0 +1,4 @@
+selenium==4.38.0
+bs4==0.0.2
+pandas==2.3.3
+undetected-chromedriver==3.5.5
