@@ -442,13 +442,13 @@ def scrape_where_they_live_without_quantum(driver, base_url):
                     {"Count": count, "Location": location}
                 )
 
-            where_they_live_without_quantum_data = {
-                "Company Name": company_name,
-                "Associated Members": associated_members_count,
-                "Locations": where_they_live_without_quantum,
-                "Time Stamp": start_time.isoformat(),
-                "Redirected to URL": current_url,
-            }
+        where_they_live_without_quantum_data = {
+            "Company Name": company_name,
+            "Associated Members": associated_members_count,
+            "Locations": where_they_live_without_quantum,
+            "Time Stamp": start_time.isoformat(),
+            "Redirected to URL": current_url,
+        }
         return where_they_live_without_quantum_data
 
     except Exception as e:
@@ -726,6 +726,20 @@ def main(input_csv, username, password):
     """
     try:
         logging.info("---<<< STARTED SCRAPING >>>---")
+        # Clear existing output files to prevent duplicates
+        output_files = [
+            "about_data.json",
+            "where_they_live_with_quantum_data.json",
+            "where_they_live_without_quantum_data.json",
+            "what_they_do_data_with_quantum.json",
+            "what_they_do_data_without_quantum.json",
+        ]
+        for filename in output_files:
+            target_path = OUTPUT_DIR / filename
+            if target_path.is_file():
+                target_path.unlink()
+                logging.info(f"Cleared existing file: {filename}")
+
         logging.info("Reading input CSV file...")
         # Read LinkedIn URLs from input CSV
         input_df = pd.read_csv(input_csv, encoding="ISO-8859-1")
@@ -773,8 +787,8 @@ def main(input_csv, username, password):
                     save_to_json(data, "about_data.json")
                     save_to_json(data, "where_they_live_with_quantum_data.json")
                     save_to_json(data, "where_they_live_without_quantum_data.json")
-                    save_to_json(data, "what_they_do_with_quantum_data.json")
-                    save_to_json(data, "what_they_do_without_quantum_data.json")
+                    save_to_json(data, "what_they_do_data_with_quantum.json")
+                    save_to_json(data, "what_they_do_data_without_quantum.json")
                     continue
 
                 # Validate and clean the LinkedIn URL
@@ -791,8 +805,8 @@ def main(input_csv, username, password):
                     save_to_json(data, "about_data.json")
                     save_to_json(data, "where_they_live_with_quantum_data.json")
                     save_to_json(data, "where_they_live_without_quantum_data.json")
-                    save_to_json(data, "what_they_do_with_quantum_data.json")
-                    save_to_json(data, "what_they_do_without_quantum_data.json")
+                    save_to_json(data, "what_they_do_data_with_quantum.json")
+                    save_to_json(data, "what_they_do_data_without_quantum.json")
                     continue
 
                 # Scrape 'About' section
@@ -891,7 +905,7 @@ def setup_logging():
 # Main script
 if __name__ == "__main__":
     setup_logging()
-    input_csv_file = "QED-C_Linkedin_URLS_Jan_2024.csv"
+    input_csv_file = "test-2.csv"
     linkedin_username = "tivet80750@bablace.com"
     linkedin_password = "Callit00F"
 
