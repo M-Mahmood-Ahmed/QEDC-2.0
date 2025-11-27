@@ -24,8 +24,7 @@ def process_about_data(about_data_file, output_file="about_data.csv"):
     rows = []
     for about_data in data:
         associated_members = (
-            re.sub(r"[^\d]", "", about_data.get("No. of associated members", ""))
-            or "-"
+            re.sub(r"[^\d]", "", about_data.get("No. of associated members", "")) or "-"
         )
         company_size = re.sub(r"[^\d\-]", "", about_data.get("Company size", "-"))
         company_size = f"'{company_size}" if company_size != "-" else company_size
@@ -85,7 +84,7 @@ def process_what_they_do_long_format(file_path, output_file, is_quantum=False):
         timestamp = entry.get("Time Stamp", datetime.datetime.now().isoformat())
         redirected_to_url = entry.get("Redirected to URL", "-")
         roles = entry.get("Roles", [])
-        
+
         # Get membership count
         if is_quantum:
             membership_value = entry.get("Quantum Associated Members", "-")
@@ -109,13 +108,13 @@ def process_what_they_do_long_format(file_path, output_file, is_quantum=False):
                 "Time Stamp": timestamp,
                 "Redirected to URL": redirected_to_url,
             }
-            
+
             # Add membership column
             if is_quantum:
                 row["Quantum Associated Members"] = membership_value
             else:
                 row["Associated Members"] = membership_value
-                
+
             rows.append(row)
 
     df = pd.DataFrame(rows)
@@ -152,7 +151,7 @@ def process_where_they_live(file_path, output_file, include_quantum):
         timestamp = entry.get("Time Stamp", datetime.datetime.now().isoformat())
         redirected_to_url = entry.get("Redirected to URL", "-")
         locations = entry.get("Locations", [])
-        
+
         # Get membership count
         if include_quantum:
             membership_value = entry.get("Quantum Associated Members", "-")
@@ -209,14 +208,14 @@ def process_where_they_live(file_path, output_file, include_quantum):
 def main():
     """
     Main function to process all LinkedIn workforce data.
-    
+
     Expected Input JSONs in output/ directory:
     - about_data.json
     - what_they_do_data_with_quantum.json
     - what_they_do_data_without_quantum.json
     - where_they_live_with_quantum_data.json
     - where_they_live_without_quantum_data.json
-    
+
     Generated Output CSVs:
     - about_data.csv
     - what_they_do_with_quantum.csv (LONG FORMAT)

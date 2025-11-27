@@ -19,7 +19,7 @@ def dynamic_save_to_csv(
     membership_value,
     timestamp,
     redirected_to_URL,
-    fill_value="-*",
+    fill_value="-",
 ):
     """
     Save 'What They Do' data to a CSV file dynamically handling role-based columns.
@@ -88,12 +88,12 @@ def process_what_they_do(file_path, output_file, membership_column):
         data = json.load(json_file)
 
     for entry in data:
-        company_name = entry.get("Company Name", "-*")
-        membership_value = entry.get(membership_column, "-*")
+        company_name = entry.get("Company Name", "-")
+        membership_value = entry.get(membership_column, "-")
         roles = entry.get("Roles", [])
         timestamp = entry.get("Time Stamp", datetime.datetime.now().isoformat())
-        redirected_to_URL = entry.get("Redirected to URL", "-*")
-        input_company_name = entry.get("input_company_name", "-*")
+        redirected_to_URL = entry.get("Redirected to URL", "-")
+        input_company_name = entry.get("input_company_name", "-")
         dynamic_save_to_csv(
             data=roles,
             filename=output_file,
@@ -120,29 +120,28 @@ def process_about_data(about_data_file, output_file="about_data.csv"):
     rows = []
     for about_data in data:
         associated_members = (
-            re.sub(r"[^\d]", "", about_data.get("No. of associated members", ""))
-            or "-*"
+            re.sub(r"[^\d]", "", about_data.get("No. of associated members", "")) or "-"
         )
-        company_size = re.sub(r"[^\d\-]", "", about_data.get("Company size", "-*"))
-        company_size = f"'{company_size}" if company_size != "-*" else company_size
-        linkedin_url = about_data.get("LinkedIn URL", "-*").split("?")[0]
+        company_size = re.sub(r"[^\d\-]", "", about_data.get("Company size", "-"))
+        company_size = f"'{company_size}" if company_size != "-" else company_size
+        linkedin_url = about_data.get("LinkedIn URL", "-").split("?")[0]
 
         rows.append(
             {
-                "Input Company Name": about_data.get("input_company_name", "-*"),
-                "Company Name": about_data.get("Company Name", "-*"),
+                "Input Company Name": about_data.get("input_company_name", "-"),
+                "Company Name": about_data.get("Company Name", "-"),
                 "Associated Members": associated_members,
-                "Website": about_data.get("Website", "-*"),
-                "Industry": about_data.get("Industry", "-*"),
+                "Website": about_data.get("Website", "-"),
+                "Industry": about_data.get("Industry", "-"),
                 "Company Size": company_size,
-                "Headquarters": about_data.get("Headquarters", "-*"),
-                "Founded": about_data.get("Founded", "-*"),
-                "Specialties": about_data.get("Specialties", "-*"),
+                "Headquarters": about_data.get("Headquarters", "-"),
+                "Founded": about_data.get("Founded", "-"),
+                "Specialties": about_data.get("Specialties", "-"),
                 "LinkedIn URL": linkedin_url,
                 "Time Stamp": about_data.get(
                     "Time Stamp", datetime.datetime.now().isoformat()
                 ),
-                "Redirected to URL": about_data.get("Redirected to URL", "-*"),
+                "Redirected to URL": about_data.get("Redirected to URL", "-"),
             }
         )
 
@@ -152,7 +151,7 @@ def process_about_data(about_data_file, output_file="about_data.csv"):
     for col in df.select_dtypes(include=["number"]).columns:
         df[col] = df[col].astype("object")
 
-    df.fillna("-*", inplace=True)
+    df.fillna("-", inplace=True)
 
     if os.path.isfile(output_file):
         existing_df = pd.read_csv(output_file)
@@ -179,34 +178,34 @@ def process_where_they_live(file_path, output_file, include_quantum):
         for loc in locations:
             if isinstance(loc, dict):
                 row = {
-                    "Input Company Name": entry.get("input_company_name", "-*"),
-                    "Company Name": entry.get("Company Name", "-*"),
-                    "Location": loc.get("Location", "-*"),
-                    "Count": loc.get("Count", "-*"),
+                    "Input Company Name": entry.get("input_company_name", "-"),
+                    "Company Name": entry.get("Company Name", "-"),
+                    "Location": loc.get("Location", "-"),
+                    "Count": loc.get("Count", "-"),
                     "Time Stamp": entry.get(
                         "Time Stamp", datetime.datetime.now().isoformat()
                     ),
-                    "Redirected to URL": entry.get("Redirected to URL", "-*"),
+                    "Redirected to URL": entry.get("Redirected to URL", "-"),
                 }
                 if include_quantum:
                     row["Quantum Associated Members"] = entry.get(
-                        "Quantum Associated Members", "-*"
+                        "Quantum Associated Members", "-"
                     )
                 else:
-                    row["Associated Members"] = entry.get("Associated Members", "-*")
+                    row["Associated Members"] = entry.get("Associated Members", "-")
                 rows.append(row)
             else:
                 # Handle unexpected format
                 rows.append(
                     {
-                        "Input Company Name": entry.get("input_company_name", "-*"),
-                        "Company Name": entry.get("Company Name", "-*"),
+                        "Input Company Name": entry.get("input_company_name", "-"),
+                        "Company Name": entry.get("Company Name", "-"),
                         "Location": str(loc),
-                        "Count": "-*",
+                        "Count": "-",
                         "Time Stamp": entry.get(
                             "Time Stamp", datetime.datetime.now().isoformat()
                         ),
-                        "Redirected to URL": entry.get("Redirected to URL", "-*"),
+                        "Redirected to URL": entry.get("Redirected to URL", "-"),
                     }
                 )
 
@@ -216,7 +215,7 @@ def process_where_they_live(file_path, output_file, include_quantum):
     for col in df.select_dtypes(include=["number"]).columns:
         df[col] = df[col].astype("object")
 
-    df.fillna("-*", inplace=True)
+    df.fillna("-", inplace=True)
 
     if os.path.isfile(output_file):
         existing_df = pd.read_csv(output_file)

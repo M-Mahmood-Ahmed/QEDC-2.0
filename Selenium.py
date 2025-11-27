@@ -103,13 +103,13 @@ def login_to_linkedin(driver, username, password):
 def extract_relevant_data(soup):
     # Required headings to cross-check
     required_headings = {
-        "Website": "-*-",
-        "Industry": "-*-",
-        "Company size": "-*-",
-        "No. of associated members": "-*-",
-        "Headquarters": "-*-",
-        "Founded": "-*-",
-        "Specialties": "-*-",
+        "Website": "-",
+        "Industry": "-",
+        "Company size": "-",
+        "No. of associated members": "-",
+        "Headquarters": "-",
+        "Founded": "-",
+        "Specialties": "-",
     }
 
     # Initialize the dictionary with default values
@@ -156,7 +156,7 @@ def extract_relevant_data(soup):
 
 
 def associated_members(soup):
-    associated_members = "-*-"
+    associated_members = "-"
     # Find the div with the specific class
     org_people_div = soup.find("div", class_="org-people__header-spacing-carousel")
 
@@ -191,7 +191,7 @@ def scrape_about_section(driver, base_url):
             if "/unavailable/" in current_url:
                 logging.warning("Company not available on LinkedIn.")
                 return {
-                    "Company Name": "-*",
+                    "Company Name": "-",
                     "LinkedIn URL": base_url,
                     "Targeted URL": about_url,
                     "Redirected to URL": current_url,
@@ -205,7 +205,7 @@ def scrape_about_section(driver, base_url):
         except Exception as e:
             logging.error(f"Error loading {about_url}: {str(e)}")
             about_data = {
-                "Company Name": "-*",
+                "Company Name": "-",
                 "LinkedIn URL": base_url,
                 "Error": str(e),
                 "Time Stamp": start_time.isoformat(),
@@ -217,7 +217,7 @@ def scrape_about_section(driver, base_url):
 
         # Extract fields with proper checks
         about_data["Company Name"] = (
-            soup.find("h1").text.strip() if soup.find("h1") else "-*"
+            soup.find("h1").text.strip() if soup.find("h1") else "-"
         )
         try:
             extracted_data = extract_relevant_data(soup)
@@ -238,7 +238,7 @@ def scrape_about_section(driver, base_url):
     except Exception as e:
         logging.error(f"Error scraping {about_url}: {str(e)}")
         about_data = {
-            "Company Name": "-*",
+            "Company Name": "-",
             "LinkedIn URL": base_url,
             "Error": str(e),
             "Time Stamp": start_time.isoformat(),
@@ -259,7 +259,7 @@ def scrape_where_they_live_with_quantum(driver, base_url):
             if "/unavailable/" in current_url:
                 logging.warning("Company not available on LinkedIn.")
                 about_data = {
-                    "Company Name": "-*",
+                    "Company Name": "-",
                     "LinkedIn URL": base_url,
                     "Targeted URL": location_url,
                     "Redirected to URL": current_url,
@@ -267,11 +267,11 @@ def scrape_where_they_live_with_quantum(driver, base_url):
                 }
                 return about_data
         try:
-            company_name = "-*"
+            company_name = "-"
             soup = BeautifulSoup(driver.page_source, "html.parser")
             company_name_tag = soup.find("h1", class_="org-top-card-summary__title")
             company_name = (
-                company_name_tag.get_text(strip=True) if company_name_tag else "-*"
+                company_name_tag.get_text(strip=True) if company_name_tag else "-"
             )
         except Exception:
             logging.error(
@@ -279,8 +279,8 @@ def scrape_where_they_live_with_quantum(driver, base_url):
             )
             data = {
                 "Company Name": company_name,
-                "Quantum Associated Members": "-*",
-                "Locations": "-*",
+                "Quantum Associated Members": "-",
+                "Locations": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -292,7 +292,7 @@ def scrape_where_they_live_with_quantum(driver, base_url):
             logging.error(
                 f"Unexpected error in associated memebers count ..., error - {e}"
             )
-            quantum_members_count = "-*"
+            quantum_members_count = "-"
 
         try:
             WebDriverWait(driver, 6).until(
@@ -305,7 +305,7 @@ def scrape_where_they_live_with_quantum(driver, base_url):
             data = {
                 "Company Name": company_name,
                 "Quantum Associated Members": quantum_members_count,
-                "Locations": "-*",
+                "Locations": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -320,16 +320,14 @@ def scrape_where_they_live_with_quantum(driver, base_url):
             )
             for button in buttons:
                 count = (
-                    button.find("strong").text.strip()
-                    if button.find("strong")
-                    else "-*"
+                    button.find("strong").text.strip() if button.find("strong") else "-"
                 )
                 location = (
                     button.find(
                         "span", class_="org-people-bar-graph-element__category"
                     ).text.strip()
                     if button.find("span")
-                    else "-*"
+                    else "-"
                 )
                 where_they_live.append({"Count": count, "Location": location})
 
@@ -346,9 +344,9 @@ def scrape_where_they_live_with_quantum(driver, base_url):
     except Exception as e:
         logging.error(f"Error scraping Where They Live with Quantum data: {e}")
         return {
-            "Company Name": "-*",
-            "Quantum Associated Members": "-*",
-            "Locations": "-*",
+            "Company Name": "-",
+            "Quantum Associated Members": "-",
+            "Locations": "-",
             "Time Stamp": start_time.isoformat(),
             "Error": str(e),
         }
@@ -367,7 +365,7 @@ def scrape_where_they_live_without_quantum(driver, base_url):
             if "/unavailable/" in current_url:
                 logging.warning("Company not available on LinkedIn.")
                 about_data = {
-                    "Company Name": "-*",
+                    "Company Name": "-",
                     "LinkedIn URL": base_url,
                     "Targeted URL": location_url_wihout_quantum,
                     "Redirected to URL": current_url,
@@ -376,11 +374,11 @@ def scrape_where_they_live_without_quantum(driver, base_url):
                 return about_data
 
         try:
-            company_name = "-*"
+            company_name = "-"
             soup = BeautifulSoup(driver.page_source, "html.parser")
             company_name_tag = soup.find("h1", class_="org-top-card-summary__title")
             company_name = (
-                company_name_tag.get_text(strip=True) if company_name_tag else "-*"
+                company_name_tag.get_text(strip=True) if company_name_tag else "-"
             )
         except Exception:
             logging.error(
@@ -388,8 +386,8 @@ def scrape_where_they_live_without_quantum(driver, base_url):
             )
             data = {
                 "Company Name": company_name,
-                "Associated Members": "-*",
-                "Locations": "-*",
+                "Associated Members": "-",
+                "Locations": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -401,7 +399,7 @@ def scrape_where_they_live_without_quantum(driver, base_url):
             logging.error(
                 f"Unexpected error in associated memebers count ..., error - {e}"
             )
-            associated_members_count = "-*"
+            associated_members_count = "-"
 
         try:
             WebDriverWait(driver, 6).until(
@@ -416,7 +414,7 @@ def scrape_where_they_live_without_quantum(driver, base_url):
             data = {
                 "Company Name": company_name,
                 "Associated Members": associated_members_count,
-                "Locations": "-*",
+                "Locations": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -431,16 +429,14 @@ def scrape_where_they_live_without_quantum(driver, base_url):
             )
             for button in buttons:
                 count = (
-                    button.find("strong").text.strip()
-                    if button.find("strong")
-                    else "-*"
+                    button.find("strong").text.strip() if button.find("strong") else "-"
                 )
                 location = (
                     button.find(
                         "span", class_="org-people-bar-graph-element__category"
                     ).text.strip()
                     if button.find("span")
-                    else "-*"
+                    else "-"
                 )
                 where_they_live_without_quantum.append(
                     {"Count": count, "Location": location}
@@ -458,9 +454,9 @@ def scrape_where_they_live_without_quantum(driver, base_url):
     except Exception as e:
         logging.error(f"Error scraping Where They Live without Quantum data: {e}")
         return {
-            "Company Name": "-*",
-            "Associated Members": "-*",
-            "Locations": "-*",
+            "Company Name": "-",
+            "Associated Members": "-",
+            "Locations": "-",
             "Time Stamp": start_time.isoformat(),
             "Error": str(e),
         }
@@ -480,7 +476,7 @@ def scrape_what_they_do_with_quantum(driver, base_url):
             if "/unavailable/" in current_url:
                 logging.warning("Company not available on LinkedIn.")
                 about_data = {
-                    "Company Name": "-*",
+                    "Company Name": "-",
                     "LinkedIn URL": base_url,
                     "Targeted URL": role_url,
                     "Redirected to URL": current_url,
@@ -489,11 +485,11 @@ def scrape_what_they_do_with_quantum(driver, base_url):
                 return about_data
 
         try:
-            company_name = "-*"
+            company_name = "-"
             soup = BeautifulSoup(driver.page_source, "html.parser")
             company_name_tag = soup.find("h1", class_="org-top-card-summary__title")
             company_name = (
-                company_name_tag.get_text(strip=True) if company_name_tag else "-*"
+                company_name_tag.get_text(strip=True) if company_name_tag else "-"
             )
         except Exception:
             logging.error(
@@ -501,8 +497,8 @@ def scrape_what_they_do_with_quantum(driver, base_url):
             )
             data = {
                 "Company Name": company_name,
-                "Quantum Associated Members": "-*",
-                "Roles": "-*",
+                "Quantum Associated Members": "-",
+                "Roles": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -514,7 +510,7 @@ def scrape_what_they_do_with_quantum(driver, base_url):
             logging.error(
                 f"Unexpected error in associated memebers count ..., error - {e}"
             )
-            quantum_members_count = "-*"
+            quantum_members_count = "-"
 
         try:
             WebDriverWait(driver, 6).until(
@@ -527,7 +523,7 @@ def scrape_what_they_do_with_quantum(driver, base_url):
             data = {
                 "Company Name": company_name,
                 "Quantum Associated Members": quantum_members_count,
-                "Roles": "-*",
+                "Roles": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -542,16 +538,14 @@ def scrape_what_they_do_with_quantum(driver, base_url):
             )
             for button in buttons:
                 count = (
-                    button.find("strong").text.strip()
-                    if button.find("strong")
-                    else "-*"
+                    button.find("strong").text.strip() if button.find("strong") else "-"
                 )
                 role = (
                     button.find(
                         "span", class_="org-people-bar-graph-element__category"
                     ).text.strip()
                     if button.find("span")
-                    else "-*"
+                    else "-"
                 )
                 what_they_do.append({"Count": count, "Role": role})
 
@@ -568,9 +562,9 @@ def scrape_what_they_do_with_quantum(driver, base_url):
     except Exception as e:
         logging.error(f"Error scraping What They Do with Quantum data: {e}")
         return {
-            "Company Name": "-*",
-            "Quantum Associated Members": "-*",
-            "Roles": "-*",
+            "Company Name": "-",
+            "Quantum Associated Members": "-",
+            "Roles": "-",
             "Time Stamp": start_time.isoformat(),
             "Error": str(e),
         }
@@ -590,7 +584,7 @@ def scrape_what_they_do_without_quantum(driver, base_url):
             if "/unavailable/" in current_url:
                 logging.warning("Company not available on LinkedIn.")
                 about_data = {
-                    "Company Name": "-*",
+                    "Company Name": "-",
                     "LinkedIn URL": base_url,
                     "Targeted URL": role_url_without_quantum,
                     "Redirected to URL": current_url,
@@ -599,11 +593,11 @@ def scrape_what_they_do_without_quantum(driver, base_url):
                 return about_data
 
         try:
-            company_name = "-*"
+            company_name = "-"
             soup = BeautifulSoup(driver.page_source, "html.parser")
             company_name_tag = soup.find("h1", class_="org-top-card-summary__title")
             company_name = (
-                company_name_tag.get_text(strip=True) if company_name_tag else "-*"
+                company_name_tag.get_text(strip=True) if company_name_tag else "-"
             )
         except Exception:
             logging.error(
@@ -611,8 +605,8 @@ def scrape_what_they_do_without_quantum(driver, base_url):
             )
             data = {
                 "Company Name": company_name,
-                "Associated Members": "-*",
-                "Roles": "-*",
+                "Associated Members": "-",
+                "Roles": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -624,7 +618,7 @@ def scrape_what_they_do_without_quantum(driver, base_url):
             logging.error(
                 f"Unexpected error in associated memebers count ..., error - {e}"
             )
-            associated_members_count = "-*"
+            associated_members_count = "-"
 
         try:
             WebDriverWait(driver, 6).until(
@@ -637,7 +631,7 @@ def scrape_what_they_do_without_quantum(driver, base_url):
             data = {
                 "Company Name": company_name,
                 "Associated Members": associated_members_count,
-                "Roles": "-*",
+                "Roles": "-",
                 "Time Stamp": start_time.isoformat(),
                 "Redirected to URL": current_url,
             }
@@ -652,16 +646,14 @@ def scrape_what_they_do_without_quantum(driver, base_url):
             )
             for button in buttons:
                 count = (
-                    button.find("strong").text.strip()
-                    if button.find("strong")
-                    else "-*"
+                    button.find("strong").text.strip() if button.find("strong") else "-"
                 )
                 role = (
                     button.find(
                         "span", class_="org-people-bar-graph-element__category"
                     ).text.strip()
                     if button.find("span")
-                    else "-*"
+                    else "-"
                 )
                 what_they_do_without_quantum_data.append({"Count": count, "Role": role})
 
@@ -678,9 +670,9 @@ def scrape_what_they_do_without_quantum(driver, base_url):
     except Exception as e:
         logging.error(f"Error scraping What They Do without Quantum data: {str(e)}")
         return {
-            "Company Name": "-*",
-            "Associated Members": "-*",
-            "Roles": "-*",
+            "Company Name": "-",
+            "Associated Members": "-",
+            "Roles": "-",
             "Time Stamp": start_time.isoformat(),
             "Error": str(e),
         }
