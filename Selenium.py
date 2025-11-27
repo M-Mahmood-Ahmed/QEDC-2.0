@@ -900,7 +900,7 @@ def setup_logging():
 if __name__ == "__main__":
     setup_logging()
     input_csv_file = "QED-C_Linkedin_URLS_Jan_2024.csv"
-    linkedin_username = "sotakog448@bablace.com"
+    linkedin_username = "tivet80750@bablace.com"
     linkedin_password = "Callit00F"
 
     main(input_csv_file, linkedin_username, linkedin_password)
